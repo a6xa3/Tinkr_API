@@ -1,15 +1,103 @@
-Basic instructions / knowledge
+# Arena Framework для Tinkr
 
-Getting tinkr
-GO to Tinkr.site and register + purchase a subscription. Then download the client of your choice. 
+Этот проект представляет собой фреймворк для автоматизации арены в World of Warcraft с использованием Tinkr API, а также готовую ротацию для Mistweaver Monk.
 
-File structure
-1. Only lua-code is being loaded and executed.
-2. All .lua-files in the /scripts-folder can be loaded in game with '/tinkr load <script name>*.
-  -Files with _ at the start of the file name are loaded autmatically.
-3. COmbat routines are placed in /routines and can be loaded in game with 'tinkr routine <routine name>'.
+## Структура проекта
 
-Coding plugins / Combat routines
-1. Ui isa built with Tinkrs GUI Builder. Examples found in the API documentation.
-2. Combat Routines are built using Tinkrs own Routines. EAvailable functions listed in the API documentation.
-3. All functions in the TInkr API and the World of Warcraft Classic API (Available here: https://wowpedia.fandom.com/wiki/Global_functions/Classic) are available for usage.
+### Framework/
+Универсальная логика для арены:
+
+- **Arena.lua** - Управление очередями арены, состояниями матчей
+- **Movement.lua** - Система движения, позиционирования, избегания застревания
+- **Combat.lua** - Система боя, выбор целей, приоритеты
+- **Framework.lua** - Главный модуль, объединяющий все системы
+
+### Rotations/
+Ротации для конкретных классов:
+
+- **MistweaverMonk.lua** - Полная ротация для Mistweaver Monk с автоматической ареной
+
+## Возможности Framework
+
+### Arena System
+- Автоматическая постановка в очередь (2v2, 3v3, 5v5)
+- Отслеживание состояния очереди и матча
+- Автоматический реквеу после завершения матча
+- Таймаут очереди с повторной постановкой
+
+### Movement System  
+- Следование за союзниками
+- Кайтинг от врагов
+- Определение застревания и автоматическое освобождение
+- Позиционирование в бою
+
+### Combat System
+- Автоматический выбор лучшей цели
+- Система приоритетов (хилеры > кастеры > остальные)
+- Отслеживание союзников и врагов
+- Определение опасных ситуаций
+
+## Использование
+
+### Загрузка ротации
+```lua
+/tinkr load MistweaverMonk
+```
+
+### Команды управления
+```lua
+/mwbot start     -- Запустить бота
+/mwbot stop      -- Остановить бота  
+/mwbot status    -- Показать статус
+/mwbot config    -- Настройки
+```
+
+### Настройки
+```lua
+/mwbot config heal 80           -- Порог лечения (80%)
+/mwbot config emergency 30      -- Экстренное лечение (30%)
+/mwbot config offensive true    -- Использовать атакующие заклинания
+/mwbot config cooldowns true    -- Использовать кулдауны
+```
+
+## Mistweaver Monk Features
+
+### Лечение
+- Автоматическое экстренное лечение (Life Cocoon, Revival)
+- Поддержание HoT эффектов (Renewing Mist)
+- Групповое лечение (Essence Font)
+- Усиленное лечение (Thunder Focus Tea)
+
+### Урон
+- Приоритетная ротация (Rising Sun Kick > Blackout Kick > Tiger Palm)
+- Прерывание кастов (Leg Sweep)
+- Дальний урон (Crackling Jade Lightning)
+- Использование кулдаунов (Invoke Yu'lon)
+
+### Позиционирование
+- Следование за командой
+- Кайтинг при опасности
+- Поддержание оптимальной дистанции
+
+## Расширение Framework
+
+Для создания ротации для другого класса:
+
+1. Создайте файл в папке `Rotations/`
+2. Подключите Framework: `local Framework = Tinkr:require('Framework.Framework')`
+3. Используйте системы Framework:
+   - `Framework:Update()` - обновление всех систем
+   - `Framework.Combat:GetBestTarget()` - лучшая цель
+   - `Framework.Combat:GetHealTarget()` - цель для лечения
+   - `Framework.Movement:Follow(unit)` - следование
+   - `Framework.Movement:KiteFrom(unit)` - кайтинг
+
+## Требования
+
+- Tinkr с активной подпиской
+- World of Warcraft (поддерживаются Retail/Classic)
+- Персонаж с доступом к арене
+
+## Безопасность
+
+Фреймворк использует только официальные API Tinkr и не нарушает правила игры. Все действия выполняются через легальные игровые механики.
